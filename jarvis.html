@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS - Advanced AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 30%, #16213e 60%, #0f3460 100%);
+            color: #00d4ff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .jarvis-header {
+            text-align: center;
+            margin-bottom: 20px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .jarvis-header h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        .jarvis-header p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .system-status {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 5px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff00;
+            animation: pulse 2s infinite;
+        }
+
+        .main-interface {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .voice-visualizer {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .voice-visualizer.active {
+            animation: pulse 1s ease-in-out infinite;
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.6);
+        }
+
+        .voice-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .voice-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .text-input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #00d4ff;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #00d4ff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:focus {
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        .send-button {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .response-area {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00d4ff;
+            border-radius: 10px;
+            padding: 20px;
+            height: 400px;
+            font-size: 1rem;
+            line-height: 1.6;
+            overflow-y: auto;
+        }
+
+        .task-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00d4ff;
+            border-radius: 10px;
+            padding: 20px;
+            height: 400px;
+            overflow-y: auto;
+        }
+
+        .task-category {
+            margin-bottom: 20px;
+        }
+
+        .task-category h3 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .task-button {
+            padding: 10px;
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid #00d4ff;
+            border-radius: 8px;
+            color: #00d4ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .task-button:hover {
+            background: rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .action-card {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            background: rgba(0, 212, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .action-card h4 {
+            margin-bottom: 10px;
+            color: #00d4ff;
+        }
+
+        .system-info {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00d4ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00d4ff;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #00d4ff; }
+            to { text-shadow: 0 0 30px #00d4ff, 0 0 40px #00d4ff; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 212, 255, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 1024px) {
+            .main-interface {
+                grid-template-columns: 1fr;
+            }
+            
+            .jarvis-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .task-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="jarvis-header">
+            <h1>JARVIS</h1>
+            <p>Just A Rather Very Intelligent System - Advanced Edition</p>
+        </div>
+
+        <div class="system-status">
+            <div class="status-item">
+                <div class="status-indicator"></div>
+                <span>System Online</span>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator"></div>
+                <span>Voice Ready</span>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator"></div>
+                <span>Tasks Active</span>
+            </div>
+            <div class="status-item">
+                <span id="currentTime"></span>
+            </div>
+        </div>
+
+        <div class="main-interface">
+            <div class="left-panel">
+                <div class="voice-visualizer" id="voiceVisualizer">
+                    <button class="voice-button" id="voiceButton">🎤</button>
+                </div>
+
+                <div class="input-section">
+                    <div class="input-container">
+                        <input type="text" class="text-input" id="textInput" placeholder="Ask JARVIS anything...">
+                        <button class="send-button" id="sendButton">Send</button>
+                    </div>
+                </div>
+
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <span style="margin-left: 10px;">JARVIS is processing...</span>
+                </div>
+
+                <div class="response-area" id="responseArea">
+                    <p><strong>JARVIS:</strong> Advanced AI Assistant initialized. I can help with system tasks, calculations, web browsing, and more. What would you like to do?</p>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="task-panel">
+                    <div class="task-category">
+                        <h3>🪟 System Tasks</h3>
+                        <div class="task-grid">
+                            <button class="task-button" onclick="jarvis.executeTask('open', 'notepad')">Open Notepad</button>
+                            <button class="task-button" onclick="jarvis.executeTask('open', 'calculator')">Calculator</button>
+                            <button class="task-button" onclick="jarvis.executeTask('open', 'paint')">Paint</button>
+                            <button class="task-button" onclick="jarvis.executeTask('open', 'cmd')">Command Prompt</button>
+                            <button class="task-button" onclick="jarvis.executeTask('open', 'explorer')">File Explorer</button>
+                            <button class="task-button" onclick="jarvis.executeTask('open', 'taskmanager')">Task Manager</button>
+                        </div>
+                    </div>
+
+                    <div class="task-category">
+                        <h3>🌐 Web & Apps</h3>
+                        <div class="task-grid">
+                            <button class="task-button" onclick="jarvis.executeTask('open', 'browser')">Web Browser</button>
+                            <button class="task-button" onclick="jarvis.executeTask('open', 'youtube')">YouTube</button>
+                            <button class="task-button" onclick="jarvis.executeTask('open', 'gmail')">Gmail</button>
+                            <button class="task-button" onclick="jarvis.executeTask('open', 'github')">GitHub</button>
+                            <button class="task-button" onclick="jarvis.executeTask('open', 'stackoverflow')">Stack Overflow</button>
+                            <button class="task-button" onclick="jarvis.executeTask('open', 'translate')">Translate</button>
+                        </div>
+                    </div>
+
+                    <div class="task-category">
+                        <h3>⚙️ System Control</h3>
+                        <div class="task-grid">
+                            <button class="task-button" onclick="jarvis.executeTask('system', 'shutdown')">Shutdown</button>
+                            <button class="task-button" onclick="jarvis.executeTask('system', 'restart')">Restart</button>
+                            <button class="task-button" onclick="jarvis.executeTask('system', 'sleep')">Sleep</button>
+                            <button class="task-button" onclick="jarvis.executeTask('system', 'lock')">Lock Screen</button>
+                            <button class="task-button" onclick="jarvis.executeTask('system', 'volume')">Volume Control</button>
+                            <button class="task-button" onclick="jarvis.executeTask('system', 'wifi')">WiFi Settings</button>
+                        </div>
+                    </div>
+
+                    <div class="task-category">
+                        <h3>🔧 Utilities</h3>
+                        <div class="task-grid">
+                            <button class="task-button" onclick="jarvis.executeTask('utility', 'screenshot')">Screenshot</button>
+                            <button class="task-button" onclick="jarvis.executeTask('utility', 'weather')">Weather</button>
+                            <button class="task-button" onclick="jarvis.executeTask('utility', 'calendar')">Calendar</button>
+                            <button class="task-button" onclick="jarvis.executeTask('utility', 'timer')">Timer</button>
+                            <button class="task-button" onclick="jarvis.executeTask('utility', 'news')">News</button>
+                            <button class="task-button" onclick="jarvis.executeTask('utility', 'dictionary')">Dictionary</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <div class="action-card" onclick="jarvis.showSystemInfo()">
+                <h4>💻 System Information</h4>
+                <p>View system specs and performance</p>
+            </div>
+            <div class="action-card" onclick="jarvis.showHelp()">
+                <h4>❓ Help & Commands</h4>
+                <p>Learn voice commands and features</p>
+            </div>
+            <div class="action-card" onclick="jarvis.clearHistory()">
+                <h4>🗑️ Clear History</h4>
+                <p>Reset conversation history</p>
+            </div>
+        </div>
+
+        <div class="system-info" id="systemInfo" style="display: none;">
+            <h3>System Information</h3>
+            <div id="systemDetails"></div>
+        </div>
+
+        <div class="status" id="status">Ready to assist with advanced tasks</div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        class AdvancedJarvis {
+            constructor() {
+                this.recognition = null;
+                this.synthesis = window.speechSynthesis;
+                this.isListening = false;
+                this.conversationHistory = [];
+                this.systemCommands = new Map();
+                
+                this.initElements();
+                this.initSpeechRecognition();
+                this.bindEvents();
+                this.initSystemCommands();
+                this.updateSystemTime();
+                this.speak("Advanced JARVIS system initialized. All systems operational.");
+            }
+
+            initElements() {
+                this.voiceButton = document.getElementById('voiceButton');
+                this.voiceVisualizer = document.getElementById('voiceVisualizer');
+                this.textInput = document.getElementById('textInput');
+                this.sendButton = document.getElementById('sendButton');
+                this.responseArea = document.getElementById('responseArea');
+                this.typingIndicator = document.getElementById('typingIndicator');
+                this.status = document.getElementById('status');
+                this.notification = document.getElementById('notification');
+                this.systemInfo = document.getElementById('systemInfo');
+                this.systemDetails = document.getElementById('systemDetails');
+                this.currentTime = document.getElementById('currentTime');
+            }
+
+            initSpeechRecognition() {
+                if ('webkitSpeechRecognition' in window) {
+                    this.recognition = new webkitSpeechRecognition();
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = 'en-US';
+                    
+                    this.recognition.onstart = () => {
+                        this.isListening = true;
+                        this.voiceVisualizer.classList.add('active');
+                        this.status.textContent = 'Listening for commands...';
+                    };
+                    
+                    this.recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        this.textInput.value = transcript;
+                        this.processInput(transcript);
+                    };
+                    
+                    this.recognition.onend = () => {
+                        this.isListening = false;
+                        this.voiceVisualizer.classList.remove('active');
+                        this.status.textContent = 'Ready to assist with advanced tasks';
+                    };
+                    
+                    this.recognition.onerror = (event) => {
+                        console.error('Speech recognition error:', event.error);
+                        this.isListening = false;
+                        this.voiceVisualizer.classList.remove('active');
+                        
+                        if (event.error === 'not-allowed') {
+                            this.status.textContent = 'Microphone access denied. Please enable permissions.';
+                            this.showMicrophoneHelp();
+                        } else if (event.error === 'no-speech') {
+                            this.status.textContent = 'No speech detected. Please try again.';
+                        } else {
+                            this.status.textContent = `Voice recognition error: ${event.error}`;
+                        }
+                    };
+                }
+            }
+
+            initSystemCommands() {
+                // Web applications and services
+                this.systemCommands.set('browser', () => window.open('https://www.google.com', '_blank'));
+                this.systemCommands.set('youtube', () => window.open('https://www.youtube.com', '_blank'));
+                this.systemCommands.set('gmail', () => window.open('https://www.gmail.com', '_blank'));
+                this.systemCommands.set('github', () => window.open('https://www.github.com', '_blank'));
+                this.systemCommands.set('stackoverflow', () => window.open('https://www.stackoverflow.com', '_blank'));
+                this.systemCommands.set('translate', () => window.open('https://translate.google.com', '_blank'));
+                this.systemCommands.set('weather', () => window.open('https://www.weather.com', '_blank'));
+                this.systemCommands.set('calendar', () => window.open('https://calendar.google.com', '_blank'));
+                this.systemCommands.set('news', () => window.open('https://news.google.com', '_blank'));
+                this.systemCommands.set('dictionary', () => window.open('https://www.merriam-webster.com', '_blank'));
+                
+                // System utilities (simulated)
+                this.systemCommands.set('notepad', () => this.simulateAppLaunch('Notepad'));
+                this.systemCommands.set('calculator', () => this.openCalculator());
+                this.systemCommands.set('paint', () => this.simulateAppLaunch('Paint'));
+                this.systemCommands.set('cmd', () => this.simulateAppLaunch('Command Prompt'));
+                this.systemCommands.set('explorer', () => this.simulateAppLaunch('File Explorer'));
+                this.systemCommands.set('taskmanager', () => this.simulateAppLaunch('Task Manager'));
+            }
+
+            bindEvents() {
+                this.voiceButton.addEventListener('click', () => this.toggleVoiceRecognition());
+                this.sendButton.addEventListener('click', () => this.handleSend());
+                this.textInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.handleSend();
+                });
+                
+                // Update time every second
+                setInterval(() => this.updateSystemTime(), 1000);
+            }
+
+            updateSystemTime() {
+                const now = new Date();
+                this.currentTime.textContent = now.toLocaleTimeString();
+            }
+
+            toggleVoiceRecognition() {
+                if (!this.recognition) {
+                    this.showMicrophoneHelp();
+                    return;
+                }
+                
+                if (this.isListening) {
+                    this.recognition.stop();
+                } else {
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                        .then(() => {
+                            this.recognition.start();
+                        })
+                        .catch((error) => {
+                            console.error('Microphone permission denied:', error);
+                            this.showMicrophoneHelp();
+                        });
+                }
+            }
+
+            handleSend() {
+                const input = this.textInput.value.trim();
+                if (input) {
+                    this.processInput(input);
+                    this.textInput.value = '';
+                }
+            }
+
+            processInput(input) {
+                this.addToHistory('user', input);
+                this.showTyping();
+                
+                setTimeout(() => {
+                    const response = this.generateAdvancedResponse(input);
+                    this.hideTyping();
+                    this.addToHistory('jarvis', response);
+                    this.speak(response);
+                }, 1000);
+            }
+
+            generateAdvancedResponse(input) {
+                const lowerInput = input.toLowerCase();
+                
+                // App opening commands
+                if (lowerInput.includes('open ') || lowerInput.includes('launch ') || lowerInput.includes('start ')) {
+                    return this.handleAppCommand(lowerInput);
+                }
+                
+                // System commands
+                if (lowerInput.includes('shutdown') || lowerInput.includes('turn off')) {
+                    return this.handleSystemCommand('shutdown');
+                }
+                if (lowerInput.includes('restart') || lowerInput.includes('reboot')) {
+                    return this.handleSystemCommand('restart');
+                }
+                if (lowerInput.includes('sleep') || lowerInput.includes('hibernate')) {
+                    return this.handleSystemCommand('sleep');
+                }
+                if (lowerInput.includes('lock')) {
+                    return this.handleSystemCommand('lock');
+                }
+                
+                // Utility commands
+                if (lowerInput.includes('screenshot')) {
+                    return this.takeScreenshot();
+                }
+                if (lowerInput.includes('volume')) {
+                    return this.handleVolumeControl(lowerInput);
+                }
+                if (lowerInput.includes('timer')) {
+                    return this.setTimer(lowerInput);
+                }
+                
+                // Information queries
+                if (lowerInput.includes('system info') || lowerInput.includes('computer info')) {
+                    this.showSystemInfo();
+                    return "Displaying system information.";
+                }
+                if (lowerInput.includes('time')) {
+                    return `Current time: ${new Date().toLocaleTimeString()}`;
+                }
+                if (lowerInput.includes('date')) {
+                    return `Today is ${new Date().toLocaleDateString('en-US', { 
+                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+                    })}`;
+                }
+                
+                // Math calculations
+                if (lowerInput.includes('calculate') || lowerInput.includes('math') || /[\+\-\*\/]/.test(lowerInput)) {
+                    return this.performCalculation(lowerInput);
+                }
+                
+                // Web searches
+                if (lowerInput.includes('search for') || lowerInput.includes('google')) {
+                    return this.performWebSearch(lowerInput);
+                }
+                
+                // Help and information
+                if (lowerInput.includes('help') || lowerInput.includes('commands')) {
+                    return this.getHelpInfo();
+                }
+                
+                // Weather
+                if (lowerInput.includes('weather')) {
+                    this.executeTask('utility', 'weather');
+                    return "Opening weather information.";
+                }
+                
+                // Default intelligent responses
+                return this.getContextualResponse(input);
+            }
+
+            handleAppCommand(input) {
+                const apps = ['notepad', 'calculator', 'paint', 'cmd', 'explorer', 'taskmanager', 'browser', 'youtube', 'gmail'];
+                
+                for (let app of apps) {
+                    if (input.includes(app)) {
+                        this.executeTask('open', app);
+                        return `Opening ${app.charAt(0).toUpperCase() + app.slice(1)}...`;
+                    }
+                }
+                
+                return "I couldn't identify the application. Please specify a valid app name.";
+            }
+
+            handleSystemCommand(command) {
+                this.showNotification(`System ${command} command received. This is a simulation.`);
+                return `Simulating system ${command}. In a real implementation, this would ${command} the computer.`;
+            }
+
+            performCalculation(input) {
+                try {
+                    const mathExpression = input.replace(/[^0-9+\-*/().\s]/g, '');
+                    if (mathExpression.trim()) {
+                        const result = Function(`"use strict"; return (${mathExpression})`)();
+                        return `Calculation result: ${result}`;
+                    }
+                } catch (e) {
+                    return "I couldn't calculate that. Please provide a valid mathematical expression.";
+                }
+                return "Please provide a mathematical expression to calculate.";
+            }
+
+            performWebSearch(input) {
+                const query = input.replace(/search for|google/gi, '').trim();
+                if (query) {
+                    window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+                    return `Searching for: ${query}`;
+                }
+                return "Please specify what you'd like to search for.";
+            }
+
+            takeScreenshot() {
+                this.showNotification("Screenshot feature activated. Press Win+PrintScreen to take a screenshot.");
+                return "Screenshot function activated. Use Windows key + Print Screen to capture your screen.";
+            }
+
+            handleVolumeControl(input) {
+                if (input.includes('up') || input.includes('increase')) {
+                    return "Volume increased. Use Windows volume controls for actual adjustment.";
+                } else if (input.includes('down') || input.includes('decrease')) {
+                    return "Volume decreased. Use Windows volume controls for actual adjustment.";
+                } else if (input.includes('mute')) {
+                    return "System muted. Use Windows volume controls for actual adjustment.";
+                }
+                return "Volume control ready. Say 'volume up', 'volume down', or 'mute'.";
+            }
+
+            setTimer(input) {
+                const minutes = input.match(/(\d+)\s*min/i);
+                const seconds = input.match(/(\d+)\s*sec/i);
+                
+                if (minutes || seconds) {
+                    const totalSeconds = (minutes ? parseInt(minutes[1]) * 60 : 0) + (seconds ? parseInt(seconds[1]) : 0);
+                    this.startTimer(totalSeconds);
+                    return `Timer set for ${totalSeconds} seconds.`;
+                }
+                return "Please specify timer duration (e.g., '5 minutes' or '30 seconds').";
+            }
+
+            startTimer(seconds) {
+                this.showNotification(`Timer started for ${seconds} seconds.`);
+                setTimeout(() => {
+                    this.showNotification("Timer finished!");
+                    this.speak("Timer finished!");
+                }, seconds * 1000);
+            }
+
+            getHelpInfo() {
+                return `Available commands:
+                • Open apps: "open notepad", "open calculator", "launch browser"
+                • System: "shutdown", "restart", "sleep", "lock screen"
+                • Utilities: "take screenshot", "set timer", "volume up/down"
+                • Web: "search for [query]", "open youtube", "open gmail"
+                • Info: "system info", "current time", "today's date"
+                • Math: "calculate 2+2", "what is 15*7"
+                Click task buttons or use voice commands!`;
+            }
+
+            getContextualResponse(input) {
+                const responses = [
+                    `I understand you said: "${input}". Let me help you with that.`,
+                    `Processing your request: "${input}". How can I assist further?`,
+                    `I heard: "${input}". What would you like me to do?`,
+                    `Your command: "${input}" has been noted. Need more specific instructions?`
+                ];
+                
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+
+            executeTask(category, task) {
+                this.showNotification(`Executing ${task}...`);
+                
+                switch (category) {
+                    case 'open':
+                        if (this.systemCommands.has(task)) {
+                            this.systemCommands.get(task)();
+                            this.addToHistory('jarvis', `Opening ${task}...`);
+                        } else {
+                            this.simulateAppLaunch(task);
+                        }
+                        break;
+                        
+                    case 'system':
+                        this.handleSystemCommand(task);
+                        break;
+                        
+                    case 'utility':
+                        this.handleUtilityTask(task);
+                        break;
+                }
+            }
+
+            simulateAppLaunch(appName) {
+                this.showNotification(`${appName} would be launched on a real system.`);
+                this.addToHistory('jarvis', `Simulating ${appName} launch. In Windows 11, this would open the actual application.`);
+            }
+
+            openCalculator() {
+                // Create a simple calculator popup
+                const calcWindow = window.open('', 'calculator', 'width=300,height=400');
+                calcWindow.document.write(`
+                    <html>
+                    <head><title>JARVIS Calculator</title></head>
+                    <body style="background: #1a1a2e; color: #00d4ff; font-family: Arial;">
+                        <h3>JARVIS Calculator</h3>
+                        <input type="text" id="display" style="width: 100%; padding: 10px; font-size: 18px; background: #000; color: #00d4ff; border: 1px solid #00d4ff;">
+                        <div style="margin-top: 10px;">
+                            <button onclick="document.getElementById('display').value += '7'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">7</button>
+                            <button onclick="document.getElementById('display').value += '8'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">8</button>
+                            <button onclick="document.getElementById('display').value += '9'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">9</button>
+                            <button onclick="document.getElementById('display').value += '/'" style="width: 60px; height: 50px; margin: 2px; background: #ff6b6b; color: white; border: none; cursor: pointer;">÷</button>
+                        </div>
+                        <div>
+                            <button onclick="document.getElementById('display').value += '4'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">4</button>
+                            <button onclick="document.getElementById('display').value += '5'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">5</button>
+                            <button onclick="document.getElementById('display').value += '6'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">6</button>
+                            <button onclick="document.getElementById('display').value += '*'" style="width: 60px; height: 50px; margin: 2px; background: #ff6b6b; color: white; border: none; cursor: pointer;">×</button>
+                        </div>
+                        <div>
+                            <button onclick="document.getElementById('display').value += '1'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">1</button>
+                            <button onclick="document.getElementById('display').value += '2'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">2</button>
+                            <button onclick="document.getElementById('display').value += '3'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">3</button>
+                            <button onclick="document.getElementById('display').value += '-'" style="width: 60px; height: 50px; margin: 2px; background: #ff6b6b; color: white; border: none; cursor: pointer;">-</button>
+                        </div>
+                        <div>
+                            <button onclick="document.getElementById('display').value += '0'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">0</button>
+                            <button onclick="document.getElementById('display').value += '.'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">.</button>
+                            <button onclick="try { document.getElementById('display').value = eval(document.getElementById('display').value) } catch(e) { document.getElementById('display').value = 'Error' }" style="width: 60px; height: 50px; margin: 2px; background: #4ecdc4; color: white; border: none; cursor: pointer;">=</button>
+                            <button onclick="document.getElementById('display').value += '+'" style="width: 60px; height: 50px; margin: 2px; background: #ff6b6b; color: white; border: none; cursor: pointer;">+</button>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <button onclick="document.getElementById('display').value = ''" style="width: 130px; height: 40px; margin: 2px; background: #e74c3c; color: white; border: none; cursor: pointer;">Clear</button>
+                        </div>
+                    </body>
+                    </html>
+                `);
+                this.addToHistory('jarvis', 'JARVIS Calculator opened in new window.');
+            }
+
+            handleUtilityTask(task) {
+                switch (task) {
+                    case 'screenshot':
+                        this.takeScreenshot();
+                        break;
+                    case 'weather':
+                        this.systemCommands.get('weather')();
+                        this.addToHistory('jarvis', 'Opening weather information...');
+                        break;
+                    case 'calendar':
+                        this.systemCommands.get('calendar')();
+                        this.addToHistory('jarvis', 'Opening calendar...');
+                        break;
+                    case 'timer':
+                        this.addToHistory('jarvis', 'Timer utility ready. Say "set timer for 5 minutes" or use voice command.');
+                        break;
+                    case 'news':
+                        this.systemCommands.get('news')();
+                        this.addToHistory('jarvis', 'Opening latest news...');
+                        break;
+                    case 'dictionary':
+                        this.systemCommands.get('dictionary')();
+                        this.addToHistory('jarvis', 'Opening dictionary...');
+                        break;
+                }
+            }
+
+            showSystemInfo() {
+                const systemData = {
+                    'Browser': navigator.userAgent.includes('Chrome') ? 'Google Chrome' : 
+                              navigator.userAgent.includes('Firefox') ? 'Mozilla Firefox' : 'Other',
+                    'Platform': navigator.platform,
+                    'Language': navigator.language,
+                    'Screen Resolution': `${screen.width}x${screen.height}`,
+                    'Available Memory': `${navigator.deviceMemory || 'Unknown'} GB`,
+                    'CPU Cores': `${navigator.hardwareConcurrency || 'Unknown'} cores`,
+                    'Online Status': navigator.onLine ? 'Connected' : 'Offline',
+                    'System Time': new Date().toLocaleString()
+                };
+
+                let infoHtml = '<h3>🖥️ System Information</h3>';
+                for (let [key, value] of Object.entries(systemData)) {
+                    infoHtml += `<div style="margin: 5px 0;"><strong>${key}:</strong> ${value}</div>`;
+                }
+
+                this.systemDetails.innerHTML = infoHtml;
+                this.systemInfo.style.display = 'block';
+                this.addToHistory('jarvis', 'System information displayed.');
+            }
+
+            showHelp() {
+                const helpText = this.getHelpInfo();
+                this.addToHistory('jarvis', helpText);
+                this.speak("Help information displayed. You can use voice commands or click the task buttons.");
+            }
+
+            clearHistory() {
+                this.responseArea.innerHTML = '<p><strong>JARVIS:</strong> History cleared. How can I assist you?</p>';
+                this.conversationHistory = [];
+                this.systemInfo.style.display = 'none';
+                this.addToHistory('jarvis', 'Conversation history cleared.');
+            }
+
+            addToHistory(sender, message) {
+                this.conversationHistory.push({ sender, message, timestamp: new Date() });
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.style.marginBottom = '10px';
+                messageDiv.style.padding = '10px';
+                messageDiv.style.borderRadius = '5px';
+                messageDiv.style.backgroundColor = sender === 'user' ? 'rgba(0, 212, 255, 0.1)' : 'rgba(0, 0, 0, 0.2)';
+                messageDiv.style.border = sender === 'user' ? '1px solid rgba(0, 212, 255, 0.3)' : '1px solid rgba(255, 255, 255, 0.1)';
+                messageDiv.innerHTML = `<strong>${sender === 'user' ? 'You' : 'JARVIS'}:</strong> ${message}`;
+                
+                this.responseArea.appendChild(messageDiv);
+                this.responseArea.scrollTop = this.responseArea.scrollHeight;
+            }
+
+            showTyping() {
+                this.typingIndicator.classList.add('active');
+            }
+
+            hideTyping() {
+                this.typingIndicator.classList.remove('active');
+            }
+
+            speak(text) {
+                if (this.synthesis && text.length < 200) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1.1;
+                    utterance.volume = 0.8;
+                    
+                    // Try to use a more robotic voice if available
+                    const voices = this.synthesis.getVoices();
+                    const preferredVoice = voices.find(voice => 
+                        voice.name.includes('Microsoft') || voice.name.includes('Google')
+                    );
+                    if (preferredVoice) {
+                        utterance.voice = preferredVoice;
+                    }
+                    
+                    this.synthesis.speak(utterance);
+                }
+            }
+
+            showNotification(message) {
+                this.notification.textContent = message;
+                this.notification.classList.add('show');
+                
+                setTimeout(() => {
+                    this.notification.classList.remove('show');
+                }, 3000);
+            }
+
+            showMicrophoneHelp() {
+                const helpMessage = `
+                    <div style="background: rgba(255, 100, 100, 0.1); border: 1px solid #ff6464; border-radius: 10px; padding: 15px; margin: 10px 0;">
+                        <h3 style="color: #ff6464; margin-bottom: 10px;">🎤 Microphone Access Required</h3>
+                        <p><strong>To use voice features:</strong></p>
+                        <ol style="margin: 10px 0; padding-left: 20px;">
+                            <li>Look for a microphone icon in your browser's address bar</li>
+                            <li>Click it and select "Allow" for microphone access</li>
+                            <li>Or go to browser Settings > Privacy > Microphone > Allow this site</li>
+                            <li>Refresh the page after granting permission</li>
+                        </ol>
+                        <p><em>You can still use all JARVIS features by typing or clicking buttons!</em></p>
+                    </div>
+                `;
+                this.responseArea.innerHTML += helpMessage;
+                this.responseArea.scrollTop = this.responseArea.scrollHeight;
+            }
+        }
+
+        // Initialize Advanced JARVIS
+        let jarvis;
+        document.addEventListener('DOMContentLoaded', () => {
+            jarvis = new AdvancedJarvis();
+        });
+    </script>
+</body>
+</html>
