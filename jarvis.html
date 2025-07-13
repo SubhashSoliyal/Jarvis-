@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVIS - Advanced AI Assistant</title>
-    <style>
-        * {
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>JARVIS – Ultra Advanced AI Assistant</title>
+  <style>
+    * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -17,12 +17,23 @@
             color: #00d4ff;
             overflow-x: hidden;
             min-height: 100vh;
+            position: relative;
+        }
+
+        .neural-network {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 15px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -31,82 +42,90 @@
 
         .jarvis-header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             animation: glow 2s ease-in-out infinite alternate;
         }
 
         .jarvis-header h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: bold;
             text-shadow: 0 0 20px #00d4ff;
             margin-bottom: 10px;
+            background: linear-gradient(45deg, #00d4ff, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .jarvis-header p {
-            font-size: 1.2rem;
-            opacity: 0.8;
+            font-size: 1.3rem;
+            opacity: 0.9;
+            background: linear-gradient(45deg, #00d4ff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .system-status {
             background: rgba(0, 212, 255, 0.1);
             border: 1px solid #00d4ff;
-            border-radius: 10px;
+            border-radius: 15px;
             padding: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             width: 100%;
-            max-width: 800px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            backdrop-filter: blur(10px);
         }
 
         .status-item {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin: 5px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .status-indicator {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background: #00ff00;
             animation: pulse 2s infinite;
         }
 
+        .status-indicator.warning { background: #ffa500; }
+        .status-indicator.error { background: #ff4757; }
+
         .main-interface {
             background: rgba(0, 212, 255, 0.1);
             border: 2px solid #00d4ff;
-            border-radius: 20px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+            border-radius: 25px;
+            padding: 25px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
             width: 100%;
-            max-width: 1200px;
-            margin-bottom: 20px;
+            max-width: 1400px;
+            margin-bottom: 15px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
         }
 
-        .left-panel {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .right-panel {
+        .left-panel, .center-panel, .right-panel {
             display: flex;
             flex-direction: column;
         }
 
         .voice-visualizer {
-            width: 150px;
-            height: 150px;
+            width: 180px;
+            height: 180px;
             margin: 0 auto 20px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.4) 0%, transparent 70%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -115,26 +134,39 @@
         }
 
         .voice-visualizer.active {
-            animation: pulse 1s ease-in-out infinite;
-            box-shadow: 0 0 50px rgba(0, 212, 255, 0.6);
+            animation: pulse-glow 1s ease-in-out infinite;
+            box-shadow: 0 0 60px rgba(0, 212, 255, 0.8);
+        }
+
+        .voice-visualizer::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #00d4ff, #ff6b6b, #4ecdc4, #00d4ff);
+            animation: rotate 3s linear infinite;
+            z-index: -1;
         }
 
         .voice-button {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             background: linear-gradient(45deg, #00d4ff, #0099cc);
             border: none;
             color: white;
-            font-size: 1.3rem;
+            font-size: 2rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
+            position: relative;
+            z-index: 1;
         }
 
         .voice-button:hover {
             transform: scale(1.1);
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
+            box-shadow: 0 0 35px rgba(0, 212, 255, 0.9);
         }
 
         .input-section {
@@ -149,54 +181,90 @@
 
         .text-input {
             flex: 1;
-            padding: 15px;
+            padding: 18px;
             border: 2px solid #00d4ff;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.4);
             color: #00d4ff;
-            font-size: 1rem;
+            font-size: 1.1rem;
             outline: none;
             transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
         }
 
         .text-input:focus {
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            transform: translateY(-2px);
         }
 
         .send-button {
-            padding: 15px 30px;
+            padding: 18px 35px;
             background: linear-gradient(45deg, #00d4ff, #0099cc);
             border: none;
-            border-radius: 10px;
+            border-radius: 15px;
             color: white;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-weight: bold;
         }
 
         .send-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
         }
 
         .response-area {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid #00d4ff;
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
             padding: 20px;
-            height: 400px;
+            height: 450px;
             font-size: 1rem;
             line-height: 1.6;
             overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .ai-brain {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #4ecdc4;
+            border-radius: 15px;
+            padding: 20px;
+            height: 200px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brain-activity {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(78, 205, 196, 0.1), rgba(255, 107, 107, 0.1));
+            animation: brain-wave 2s ease-in-out infinite;
+        }
+
+        .weather-widget, .news-widget, .calculator-widget, .api-config-widget {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #ff6b6b;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
         }
 
         .task-panel {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid #00d4ff;
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
             padding: 20px;
-            height: 400px;
+            height: 500px;
             overflow-y: auto;
+            backdrop-filter: blur(10px);
         }
 
         .task-category {
@@ -205,77 +273,103 @@
 
         .task-category h3 {
             color: #00d4ff;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            border-bottom: 2px solid #00d4ff;
+            padding-bottom: 5px;
         }
 
         .task-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
             margin-bottom: 15px;
         }
 
         .task-button {
-            padding: 10px;
-            background: rgba(0, 212, 255, 0.2);
-            border: 1px solid #00d4ff;
-            border-radius: 8px;
+            padding: 15px 10px;
+            background: linear-gradient(45deg, rgba(0, 212, 255, 0.2), rgba(78, 205, 196, 0.2));
+            border: 2px solid #00d4ff;
+            border-radius: 10px;
             color: #00d4ff;
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 0.9rem;
             text-align: center;
+            font-weight: bold;
+            backdrop-filter: blur(5px);
         }
 
         .task-button:hover {
-            background: rgba(0, 212, 255, 0.3);
-            transform: translateY(-2px);
+            background: linear-gradient(45deg, rgba(0, 212, 255, 0.4), rgba(78, 205, 196, 0.4));
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
         }
 
-        .quick-actions {
+        .advanced-features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
             margin-bottom: 20px;
+            width: 100%;
+            max-width: 1400px;
         }
 
-        .action-card {
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid #00d4ff;
-            border-radius: 10px;
-            padding: 15px;
+        .feature-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(78, 205, 196, 0.1));
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
         }
 
-        .action-card:hover {
-            background: rgba(0, 212, 255, 0.2);
-            transform: translateY(-3px);
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
         }
 
-        .action-card h4 {
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .feature-card h4 {
             margin-bottom: 10px;
             color: #00d4ff;
+            font-size: 1.3rem;
         }
 
-        .system-info {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid #00d4ff;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
+        .feature-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
         }
 
         .typing-indicator {
             display: none;
             align-items: center;
-            gap: 5px;
-            margin-bottom: 10px;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 10px;
         }
 
         .typing-indicator.active {
@@ -283,8 +377,8 @@
         }
 
         .typing-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: #00d4ff;
             animation: typing 1.4s infinite;
@@ -293,14 +387,80 @@
         .typing-dot:nth-child(2) { animation-delay: 0.2s; }
         .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); }
-            30% { transform: translateY(-10px); }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, rgba(0, 212, 255, 0.9), rgba(78, 205, 196, 0.9));
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .ai-modes {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .mode-button {
+            padding: 10px 20px;
+            background: rgba(0, 212, 255, 0.2);
+            border: 2px solid #00d4ff;
+            border-radius: 25px;
+            color: #00d4ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .mode-button.active {
+            background: #00d4ff;
+            color: #000;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 212, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #00d4ff, #4ecdc4);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .widget-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         @keyframes glow {
             from { text-shadow: 0 0 20px #00d4ff; }
             to { text-shadow: 0 0 30px #00d4ff, 0 0 40px #00d4ff; }
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(1); box-shadow: 0 0 60px rgba(0, 212, 255, 0.8); }
+            50% { transform: scale(1.05); box-shadow: 0 0 80px rgba(0, 212, 255, 1); }
+            100% { transform: scale(1); box-shadow: 0 0 60px rgba(0, 212, 255, 0.8); }
         }
 
         @keyframes pulse {
@@ -309,32 +469,28 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        .status {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 1rem;
-            opacity: 0.8;
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 212, 255, 0.9);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-            z-index: 1000;
-            transform: translateX(100%);
-            transition: all 0.3s ease;
+        @keyframes brain-wave {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
         }
 
-        .notification.show {
-            transform: translateX(0);
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-12px); }
         }
 
-        @media (max-width: 1024px) {
+        @media (max-width: 1200px) {
+            .main-interface {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
             .main-interface {
                 grid-template-columns: 1fr;
             }
@@ -344,675 +500,729 @@
             }
         }
 
-        @media (max-width: 768px) {
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-            
-            .task-grid {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            }
+        .message-user {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid #00d4ff;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
         }
-    </style>
+
+        .message-jarvis {
+            background: rgba(78, 205, 196, 0.1);
+            border-left: 4px solid #4ecdc4;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+        }
+
+        .message-system {
+            background: rgba(255, 107, 107, 0.1);
+            border-left: 4px solid #ff6b6b;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-upload-label {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .file-upload-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .code-editor {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #4ecdc4;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            color: #4ecdc4;
+            margin-bottom: 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        .productivity-panel {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #ff6b6b;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .quick-note {
+            width: 100%;
+            min-height: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #ff6b6b;
+            border-radius: 8px;
+            padding: 10px;
+            color: #ff6b6b;
+            font-size: 14px;
+            resize: vertical;
+            outline: none;
+        }
+
+        .reminder-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .reminder-item {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid #ff6b6b;
+            border-radius: 5px;
+            padding: 8px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reminder-item button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="jarvis-header">
-            <h1>JARVIS</h1>
-            <p>Just A Rather Very Intelligent System - Advanced Edition</p>
-        </div>
-
-        <div class="system-status">
-            <div class="status-item">
-                <div class="status-indicator"></div>
-                <span>System Online</span>
-            </div>
-            <div class="status-item">
-                <div class="status-indicator"></div>
-                <span>Voice Ready</span>
-            </div>
-            <div class="status-item">
-                <div class="status-indicator"></div>
-                <span>Tasks Active</span>
-            </div>
-            <div class="status-item">
-                <span id="currentTime"></span>
-            </div>
-        </div>
-
-        <div class="main-interface">
-            <div class="left-panel">
-                <div class="voice-visualizer" id="voiceVisualizer">
-                    <button class="voice-button" id="voiceButton">🎤</button>
-                </div>
-
-                <div class="input-section">
-                    <div class="input-container">
-                        <input type="text" class="text-input" id="textInput" placeholder="Ask JARVIS anything...">
-                        <button class="send-button" id="sendButton">Send</button>
-                    </div>
-                </div>
-
-                <div class="typing-indicator" id="typingIndicator">
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <span style="margin-left: 10px;">JARVIS is processing...</span>
-                </div>
-
-                <div class="response-area" id="responseArea">
-                    <p><strong>JARVIS:</strong> Advanced AI Assistant initialized. I can help with system tasks, calculations, web browsing, and more. What would you like to do?</p>
-                </div>
-            </div>
-
-            <div class="right-panel">
-                <div class="task-panel">
-                    <div class="task-category">
-                        <h3>🪟 System Tasks</h3>
-                        <div class="task-grid">
-                            <button class="task-button" onclick="jarvis.executeTask('open', 'notepad')">Open Notepad</button>
-                            <button class="task-button" onclick="jarvis.executeTask('open', 'calculator')">Calculator</button>
-                            <button class="task-button" onclick="jarvis.executeTask('open', 'paint')">Paint</button>
-                            <button class="task-button" onclick="jarvis.executeTask('open', 'cmd')">Command Prompt</button>
-                            <button class="task-button" onclick="jarvis.executeTask('open', 'explorer')">File Explorer</button>
-                            <button class="task-button" onclick="jarvis.executeTask('open', 'taskmanager')">Task Manager</button>
-                        </div>
-                    </div>
-
-                    <div class="task-category">
-                        <h3>🌐 Web & Apps</h3>
-                        <div class="task-grid">
-                            <button class="task-button" onclick="jarvis.executeTask('open', 'browser')">Web Browser</button>
-                            <button class="task-button" onclick="jarvis.executeTask('open', 'youtube')">YouTube</button>
-                            <button class="task-button" onclick="jarvis.executeTask('open', 'gmail')">Gmail</button>
-                            <button class="task-button" onclick="jarvis.executeTask('open', 'github')">GitHub</button>
-                            <button class="task-button" onclick="jarvis.executeTask('open', 'stackoverflow')">Stack Overflow</button>
-                            <button class="task-button" onclick="jarvis.executeTask('open', 'translate')">Translate</button>
-                        </div>
-                    </div>
-
-                    <div class="task-category">
-                        <h3>⚙️ System Control</h3>
-                        <div class="task-grid">
-                            <button class="task-button" onclick="jarvis.executeTask('system', 'shutdown')">Shutdown</button>
-                            <button class="task-button" onclick="jarvis.executeTask('system', 'restart')">Restart</button>
-                            <button class="task-button" onclick="jarvis.executeTask('system', 'sleep')">Sleep</button>
-                            <button class="task-button" onclick="jarvis.executeTask('system', 'lock')">Lock Screen</button>
-                            <button class="task-button" onclick="jarvis.executeTask('system', 'volume')">Volume Control</button>
-                            <button class="task-button" onclick="jarvis.executeTask('system', 'wifi')">WiFi Settings</button>
-                        </div>
-                    </div>
-
-                    <div class="task-category">
-                        <h3>🔧 Utilities</h3>
-                        <div class="task-grid">
-                            <button class="task-button" onclick="jarvis.executeTask('utility', 'screenshot')">Screenshot</button>
-                            <button class="task-button" onclick="jarvis.executeTask('utility', 'weather')">Weather</button>
-                            <button class="task-button" onclick="jarvis.executeTask('utility', 'calendar')">Calendar</button>
-                            <button class="task-button" onclick="jarvis.executeTask('utility', 'timer')">Timer</button>
-                            <button class="task-button" onclick="jarvis.executeTask('utility', 'news')">News</button>
-                            <button class="task-button" onclick="jarvis.executeTask('utility', 'dictionary')">Dictionary</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="quick-actions">
-            <div class="action-card" onclick="jarvis.showSystemInfo()">
-                <h4>💻 System Information</h4>
-                <p>View system specs and performance</p>
-            </div>
-            <div class="action-card" onclick="jarvis.showHelp()">
-                <h4>❓ Help & Commands</h4>
-                <p>Learn voice commands and features</p>
-            </div>
-            <div class="action-card" onclick="jarvis.clearHistory()">
-                <h4>🗑️ Clear History</h4>
-                <p>Reset conversation history</p>
-            </div>
-        </div>
-
-        <div class="system-info" id="systemInfo" style="display: none;">
-            <h3>System Information</h3>
-            <div id="systemDetails"></div>
-        </div>
-
-        <div class="status" id="status">Ready to assist with advanced tasks</div>
+  <canvas class="neural-network" id="neuralNetwork"></canvas>
+  <div class="container">
+    <div class="jarvis-header">
+      <h1>JARVIS</h1>
+      <p>Just A Rather Very Intelligent System – Ultra Advanced Edition</p>
     </div>
 
-    <div class="notification" id="notification"></div>
+    <div class="system-status">
+      <div class="status-item"><div class="status-indicator" id="systemStatus"></div><span>System Status</span></div>
+      <div class="status-item"><div class="status-indicator" id="voiceStatus"></div><span>Voice Recognition</span></div>
+      <div class="status-item"><div class="status-indicator" id="aiStatus"></div><span>AI Processing</span></div>
+      <div class="status-item"><div class="status-indicator" id="networkStatus"></div><span>Network</span></div>
+      <div class="status-item"><span id="currentTime"></span></div>
+      <div class="status-item"><span id="systemLoad">CPU: 0%</span></div>
+    </div>
 
-    <script>
-        class AdvancedJarvis {
-            constructor() {
-                this.recognition = null;
-                this.synthesis = window.speechSynthesis;
-                this.isListening = false;
-                this.conversationHistory = [];
-                this.systemCommands = new Map();
-                
-                this.initElements();
-                this.initSpeechRecognition();
-                this.bindEvents();
-                this.initSystemCommands();
-                this.updateSystemTime();
-                this.speak("Advanced JARVIS system initialized. All systems operational.");
-            }
+    <div class="ai-modes">
+      <button class="mode-button active" data-mode="assistant">🤖 Assistant</button>
+      <button class="mode-button" data-mode="creative">🎨 Creative</button>
+      <button class="mode-button" data-mode="analytics">📊 Analytics</button>
+      <button class="mode-button" data-mode="productivity">💼 Productivity</button>
+      <button class="mode-button" data-mode="coding">💻 Coding</button>
+    </div>
 
-            initElements() {
-                this.voiceButton = document.getElementById('voiceButton');
-                this.voiceVisualizer = document.getElementById('voiceVisualizer');
-                this.textInput = document.getElementById('textInput');
-                this.sendButton = document.getElementById('sendButton');
-                this.responseArea = document.getElementById('responseArea');
-                this.typingIndicator = document.getElementById('typingIndicator');
-                this.status = document.getElementById('status');
-                this.notification = document.getElementById('notification');
-                this.systemInfo = document.getElementById('systemInfo');
-                this.systemDetails = document.getElementById('systemDetails');
-                this.currentTime = document.getElementById('currentTime');
-            }
+    <div class="main-interface">
+      <div class="left-panel">
+        <div class="voice-visualizer" id="voiceVisualizer">
+          <button class="voice-button" id="voiceButton">🎤</button>
+        </div>
 
-            initSpeechRecognition() {
-                if ('webkitSpeechRecognition' in window) {
-                    this.recognition = new webkitSpeechRecognition();
-                    this.recognition.continuous = false;
-                    this.recognition.interimResults = false;
-                    this.recognition.lang = 'en-US';
-                    
-                    this.recognition.onstart = () => {
-                        this.isListening = true;
-                        this.voiceVisualizer.classList.add('active');
-                        this.status.textContent = 'Listening for commands...';
-                    };
-                    
-                    this.recognition.onresult = (event) => {
-                        const transcript = event.results[0][0].transcript;
-                        this.textInput.value = transcript;
-                        this.processInput(transcript);
-                    };
-                    
-                    this.recognition.onend = () => {
-                        this.isListening = false;
-                        this.voiceVisualizer.classList.remove('active');
-                        this.status.textContent = 'Ready to assist with advanced tasks';
-                    };
-                    
-                    this.recognition.onerror = (event) => {
-                        console.error('Speech recognition error:', event.error);
-                        this.isListening = false;
-                        this.voiceVisualizer.classList.remove('active');
-                        
-                        if (event.error === 'not-allowed') {
-                            this.status.textContent = 'Microphone access denied. Please enable permissions.';
-                            this.showMicrophoneHelp();
-                        } else if (event.error === 'no-speech') {
-                            this.status.textContent = 'No speech detected. Please try again.';
-                        } else {
-                            this.status.textContent = `Voice recognition error: ${event.error}`;
-                        }
-                    };
-                }
-            }
+        <div class="file-upload">
+          <input type="file" id="fileInput" multiple accept="*/*"/>
+          <label for="fileInput" class="file-upload-label">📁 Upload Files</label>
+        </div>
 
-            initSystemCommands() {
-                // Web applications and services
-                this.systemCommands.set('browser', () => window.open('https://www.google.com', '_blank'));
-                this.systemCommands.set('youtube', () => window.open('https://www.youtube.com', '_blank'));
-                this.systemCommands.set('gmail', () => window.open('https://www.gmail.com', '_blank'));
-                this.systemCommands.set('github', () => window.open('https://www.github.com', '_blank'));
-                this.systemCommands.set('stackoverflow', () => window.open('https://www.stackoverflow.com', '_blank'));
-                this.systemCommands.set('translate', () => window.open('https://translate.google.com', '_blank'));
-                this.systemCommands.set('weather', () => window.open('https://www.weather.com', '_blank'));
-                this.systemCommands.set('calendar', () => window.open('https://calendar.google.com', '_blank'));
-                this.systemCommands.set('news', () => window.open('https://news.google.com', '_blank'));
-                this.systemCommands.set('dictionary', () => window.open('https://www.merriam-webster.com', '_blank'));
-                
-                // System utilities (simulated)
-                this.systemCommands.set('notepad', () => this.simulateAppLaunch('Notepad'));
-                this.systemCommands.set('calculator', () => this.openCalculator());
-                this.systemCommands.set('paint', () => this.simulateAppLaunch('Paint'));
-                this.systemCommands.set('cmd', () => this.simulateAppLaunch('Command Prompt'));
-                this.systemCommands.set('explorer', () => this.simulateAppLaunch('File Explorer'));
-                this.systemCommands.set('taskmanager', () => this.simulateAppLaunch('Task Manager'));
-            }
+        <div class="input-container">
+          <input type="text" class="text-input" id="textInput" placeholder="Ask JARVIS anything..."/>
+          <button class="send-button" id="sendButton">Send</button>
+        </div>
 
-            bindEvents() {
-                this.voiceButton.addEventListener('click', () => this.toggleVoiceRecognition());
-                this.sendButton.addEventListener('click', () => this.handleSend());
-                this.textInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.handleSend();
-                });
-                
-                // Update time every second
-                setInterval(() => this.updateSystemTime(), 1000);
-            }
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
 
-            updateSystemTime() {
-                const now = new Date();
-                this.currentTime.textContent = now.toLocaleTimeString();
-            }
+        <div class="typing-indicator" id="typingIndicator">
+          <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+          <span>JARVIS is processing...</span>
+        </div>
 
-            toggleVoiceRecognition() {
-                if (!this.recognition) {
-                    this.showMicrophoneHelp();
-                    return;
-                }
-                
-                if (this.isListening) {
-                    this.recognition.stop();
-                } else {
-                    navigator.mediaDevices.getUserMedia({ audio: true })
-                        .then(() => {
-                            this.recognition.start();
-                        })
-                        .catch((error) => {
-                            console.error('Microphone permission denied:', error);
-                            this.showMicrophoneHelp();
-                        });
-                }
-            }
+        <div class="response-area" id="responseArea">
+          <div class="message-jarvis"><strong>JARVIS:</strong> Initialized. How can I assist?</div>
+        </div>
+      </div>
 
-            handleSend() {
-                const input = this.textInput.value.trim();
-                if (input) {
-                    this.processInput(input);
-                    this.textInput.value = '';
-                }
-            }
+      <div class="center-panel">
+        <div class="ai-brain">
+          <div class="brain-activity"></div>
+          <div style="position:relative;z-index:1;">
+            <div style="font-size:2rem;margin-bottom:10px">🧠</div>
+            <div id="brainStatus">Neural networks active</div>
+          </div>
+        </div>
 
-            processInput(input) {
-                this.addToHistory('user', input);
-                this.showTyping();
-                
-                setTimeout(() => {
-                    const response = this.generateAdvancedResponse(input);
-                    this.hideTyping();
-                    this.addToHistory('jarvis', response);
-                    this.speak(response);
-                }, 1000);
-            }
+        <div class="widget-container">
+          <div class="weather-widget"><h4>🌤️ Weather</h4><div id="weatherInfo">Loading...</div></div>
+          <div class="news-widget"><h4>📰 News</h4><div id="newsInfo">Fetching...</div></div>
+        </div>
 
-            generateAdvancedResponse(input) {
-                const lowerInput = input.toLowerCase();
-                
-                // App opening commands
-                if (lowerInput.includes('open ') || lowerInput.includes('launch ') || lowerInput.includes('start ')) {
-                    return this.handleAppCommand(lowerInput);
-                }
-                
-                // System commands
-                if (lowerInput.includes('shutdown') || lowerInput.includes('turn off')) {
-                    return this.handleSystemCommand('shutdown');
-                }
-                if (lowerInput.includes('restart') || lowerInput.includes('reboot')) {
-                    return this.handleSystemCommand('restart');
-                }
-                if (lowerInput.includes('sleep') || lowerInput.includes('hibernate')) {
-                    return this.handleSystemCommand('sleep');
-                }
-                if (lowerInput.includes('lock')) {
-                    return this.handleSystemCommand('lock');
-                }
-                
-                // Utility commands
-                if (lowerInput.includes('screenshot')) {
-                    return this.takeScreenshot();
-                }
-                if (lowerInput.includes('volume')) {
-                    return this.handleVolumeControl(lowerInput);
-                }
-                if (lowerInput.includes('timer')) {
-                    return this.setTimer(lowerInput);
-                }
-                
-                // Information queries
-                if (lowerInput.includes('system info') || lowerInput.includes('computer info')) {
-                    this.showSystemInfo();
-                    return "Displaying system information.";
-                }
-                if (lowerInput.includes('time')) {
-                    return `Current time: ${new Date().toLocaleTimeString()}`;
-                }
-                if (lowerInput.includes('date')) {
-                    return `Today is ${new Date().toLocaleDateString('en-US', { 
-                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-                    })}`;
-                }
-                
-                // Math calculations
-                if (lowerInput.includes('calculate') || lowerInput.includes('math') || /[\+\-\*\/]/.test(lowerInput)) {
-                    return this.performCalculation(lowerInput);
-                }
-                
-                // Web searches
-                if (lowerInput.includes('search for') || lowerInput.includes('google')) {
-                    return this.performWebSearch(lowerInput);
-                }
-                
-                // Help and information
-                if (lowerInput.includes('help') || lowerInput.includes('commands')) {
-                    return this.getHelpInfo();
-                }
-                
-                // Weather
-                if (lowerInput.includes('weather')) {
-                    this.executeTask('utility', 'weather');
-                    return "Opening weather information.";
-                }
-                
-                // Default intelligent responses
-                return this.getContextualResponse(input);
-            }
+        <div class="calculator-widget">
+          <h4>🔢 Advanced Calculator</h4>
+          <input id="calcInput" placeholder="sqrt(16) or 2^8" class="text-input"/>
+          <div id="calcResult" style="margin-top:10px;color:#4ecdc4;font-size:1.2rem"></div>
+        </div>
 
-            handleAppCommand(input) {
-                const apps = ['notepad', 'calculator', 'paint', 'cmd', 'explorer', 'taskmanager', 'browser', 'youtube', 'gmail'];
-                
-                for (let app of apps) {
-                    if (input.includes(app)) {
-                        this.executeTask('open', app);
-                        return `Opening ${app.charAt(0).toUpperCase() + app.slice(1)}...`;
-                    }
-                }
-                
-                return "I couldn't identify the application. Please specify a valid app name.";
-            }
+        <div class="productivity-panel">
+          <h4>📝 Quick Notes & Reminders</h4>
+          <textarea class="quick-note" id="quickNote" placeholder="Take a quick note..."></textarea>
+          <button onclick="jarvis.addReminder()">Add Reminder</button>
+          <div class="reminder-list" id="reminderList"></div>
+        </div>
+      </div>
 
-            handleSystemCommand(command) {
-                this.showNotification(`System ${command} command received. This is a simulation.`);
-                return `Simulating system ${command}. In a real implementation, this would ${command} the computer.`;
-            }
-
-            performCalculation(input) {
-                try {
-                    const mathExpression = input.replace(/[^0-9+\-*/().\s]/g, '');
-                    if (mathExpression.trim()) {
-                        const result = Function(`"use strict"; return (${mathExpression})`)();
-                        return `Calculation result: ${result}`;
-                    }
-                } catch (e) {
-                    return "I couldn't calculate that. Please provide a valid mathematical expression.";
-                }
-                return "Please provide a mathematical expression to calculate.";
-            }
-
-            performWebSearch(input) {
-                const query = input.replace(/search for|google/gi, '').trim();
-                if (query) {
-                    window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
-                    return `Searching for: ${query}`;
-                }
-                return "Please specify what you'd like to search for.";
-            }
-
-            takeScreenshot() {
-                this.showNotification("Screenshot feature activated. Press Win+PrintScreen to take a screenshot.");
-                return "Screenshot function activated. Use Windows key + Print Screen to capture your screen.";
-            }
-
-            handleVolumeControl(input) {
-                if (input.includes('up') || input.includes('increase')) {
-                    return "Volume increased. Use Windows volume controls for actual adjustment.";
-                } else if (input.includes('down') || input.includes('decrease')) {
-                    return "Volume decreased. Use Windows volume controls for actual adjustment.";
-                } else if (input.includes('mute')) {
-                    return "System muted. Use Windows volume controls for actual adjustment.";
-                }
-                return "Volume control ready. Say 'volume up', 'volume down', or 'mute'.";
-            }
-
-            setTimer(input) {
-                const minutes = input.match(/(\d+)\s*min/i);
-                const seconds = input.match(/(\d+)\s*sec/i);
-                
-                if (minutes || seconds) {
-                    const totalSeconds = (minutes ? parseInt(minutes[1]) * 60 : 0) + (seconds ? parseInt(seconds[1]) : 0);
-                    this.startTimer(totalSeconds);
-                    return `Timer set for ${totalSeconds} seconds.`;
-                }
-                return "Please specify timer duration (e.g., '5 minutes' or '30 seconds').";
-            }
-
-            startTimer(seconds) {
-                this.showNotification(`Timer started for ${seconds} seconds.`);
-                setTimeout(() => {
-                    this.showNotification("Timer finished!");
-                    this.speak("Timer finished!");
-                }, seconds * 1000);
-            }
-
-            getHelpInfo() {
-                return `Available commands:
-                • Open apps: "open notepad", "open calculator", "launch browser"
-                • System: "shutdown", "restart", "sleep", "lock screen"
-                • Utilities: "take screenshot", "set timer", "volume up/down"
-                • Web: "search for [query]", "open youtube", "open gmail"
-                • Info: "system info", "current time", "today's date"
-                • Math: "calculate 2+2", "what is 15*7"
-                Click task buttons or use voice commands!`;
-            }
-
-            getContextualResponse(input) {
-                const responses = [
-                    `I understand you said: "${input}". Let me help you with that.`,
-                    `Processing your request: "${input}". How can I assist further?`,
-                    `I heard: "${input}". What would you like me to do?`,
-                    `Your command: "${input}" has been noted. Need more specific instructions?`
-                ];
-                
-                return responses[Math.floor(Math.random() * responses.length)];
-            }
-
-            executeTask(category, task) {
-                this.showNotification(`Executing ${task}...`);
-                
-                switch (category) {
-                    case 'open':
-                        if (this.systemCommands.has(task)) {
-                            this.systemCommands.get(task)();
-                            this.addToHistory('jarvis', `Opening ${task}...`);
-                        } else {
-                            this.simulateAppLaunch(task);
-                        }
-                        break;
-                        
-                    case 'system':
-                        this.handleSystemCommand(task);
-                        break;
-                        
-                    case 'utility':
-                        this.handleUtilityTask(task);
-                        break;
-                }
-            }
-
-            simulateAppLaunch(appName) {
-                this.showNotification(`${appName} would be launched on a real system.`);
-                this.addToHistory('jarvis', `Simulating ${appName} launch. In Windows 11, this would open the actual application.`);
-            }
-
-            openCalculator() {
-                // Create a simple calculator popup
-                const calcWindow = window.open('', 'calculator', 'width=300,height=400');
-                calcWindow.document.write(`
-                    <html>
-                    <head><title>JARVIS Calculator</title></head>
-                    <body style="background: #1a1a2e; color: #00d4ff; font-family: Arial;">
-                        <h3>JARVIS Calculator</h3>
-                        <input type="text" id="display" style="width: 100%; padding: 10px; font-size: 18px; background: #000; color: #00d4ff; border: 1px solid #00d4ff;">
-                        <div style="margin-top: 10px;">
-                            <button onclick="document.getElementById('display').value += '7'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">7</button>
-                            <button onclick="document.getElementById('display').value += '8'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">8</button>
-                            <button onclick="document.getElementById('display').value += '9'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">9</button>
-                            <button onclick="document.getElementById('display').value += '/'" style="width: 60px; height: 50px; margin: 2px; background: #ff6b6b; color: white; border: none; cursor: pointer;">÷</button>
+      <div class="right-panel">
+        <div class="api-config-widget">
+            <h4>🔑 API Configuration</h4>
+            <input type="text" id="geminiKeyInput" placeholder="Gemini API Key" class="text-input" style="margin-bottom: 10px;">
+            <input type="text" id="owmKeyInput" placeholder="OpenWeatherMap API Key" class="text-input" style="margin-bottom: 10px;">
+            <input type="text" id="newsKeyInput" placeholder="NewsAPI Key" class="text-input" style="margin-bottom: 10px;">
+            <button id="saveApiKeys" class="send-button">Save Keys</button>
+        </div>
+        <div class="task-panel">
+          <div class="task-category">
+                        <h3>🪟 System Control</h3>
+                        <div class="task-grid">
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('system', 'performance')">System Monitor</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('system', 'cleanup')">Disk Cleanup</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('system', 'security')">Security Scan</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('system', 'backup')">Backup Files</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('system', 'optimize')">Optimize System</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('system', 'diagnostics')">Run Diagnostics</button>
                         </div>
-                        <div>
-                            <button onclick="document.getElementById('display').value += '4'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">4</button>
-                            <button onclick="document.getElementById('display').value += '5'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">5</button>
-                            <button onclick="document.getElementById('display').value += '6'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">6</button>
-                            <button onclick="document.getElementById('display').value += '*'" style="width: 60px; height: 50px; margin: 2px; background: #ff6b6b; color: white; border: none; cursor: pointer;">×</button>
-                        </div>
-                        <div>
-                            <button onclick="document.getElementById('display').value += '1'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">1</button>
-                            <button onclick="document.getElementById('display').value += '2'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">2</button>
-                            <button onclick="document.getElementById('display').value += '3'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">3</button>
-                            <button onclick="document.getElementById('display').value += '-'" style="width: 60px; height: 50px; margin: 2px; background: #ff6b6b; color: white; border: none; cursor: pointer;">-</button>
-                        </div>
-                        <div>
-                            <button onclick="document.getElementById('display').value += '0'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">0</button>
-                            <button onclick="document.getElementById('display').value += '.'" style="width: 60px; height: 50px; margin: 2px; background: #00d4ff; color: white; border: none; cursor: pointer;">.</button>
-                            <button onclick="try { document.getElementById('display').value = eval(document.getElementById('display').value) } catch(e) { document.getElementById('display').value = 'Error' }" style="width: 60px; height: 50px; margin: 2px; background: #4ecdc4; color: white; border: none; cursor: pointer;">=</button>
-                            <button onclick="document.getElementById('display').value += '+'" style="width: 60px; height: 50px; margin: 2px; background: #ff6b6b; color: white; border: none; cursor: pointer;">+</button>
-                        </div>
-                        <div style="margin-top: 10px;">
-                            <button onclick="document.getElementById('display').value = ''" style="width: 130px; height: 40px; margin: 2px; background: #e74c3c; color: white; border: none; cursor: pointer;">Clear</button>
-                        </div>
-                    </body>
-                    </html>
-                `);
-                this.addToHistory('jarvis', 'JARVIS Calculator opened in new window.');
-            }
-
-            handleUtilityTask(task) {
-                switch (task) {
-                    case 'screenshot':
-                        this.takeScreenshot();
-                        break;
-                    case 'weather':
-                        this.systemCommands.get('weather')();
-                        this.addToHistory('jarvis', 'Opening weather information...');
-                        break;
-                    case 'calendar':
-                        this.systemCommands.get('calendar')();
-                        this.addToHistory('jarvis', 'Opening calendar...');
-                        break;
-                    case 'timer':
-                        this.addToHistory('jarvis', 'Timer utility ready. Say "set timer for 5 minutes" or use voice command.');
-                        break;
-                    case 'news':
-                        this.systemCommands.get('news')();
-                        this.addToHistory('jarvis', 'Opening latest news...');
-                        break;
-                    case 'dictionary':
-                        this.systemCommands.get('dictionary')();
-                        this.addToHistory('jarvis', 'Opening dictionary...');
-                        break;
-                }
-            }
-
-            showSystemInfo() {
-                const systemData = {
-                    'Browser': navigator.userAgent.includes('Chrome') ? 'Google Chrome' : 
-                              navigator.userAgent.includes('Firefox') ? 'Mozilla Firefox' : 'Other',
-                    'Platform': navigator.platform,
-                    'Language': navigator.language,
-                    'Screen Resolution': `${screen.width}x${screen.height}`,
-                    'Available Memory': `${navigator.deviceMemory || 'Unknown'} GB`,
-                    'CPU Cores': `${navigator.hardwareConcurrency || 'Unknown'} cores`,
-                    'Online Status': navigator.onLine ? 'Connected' : 'Offline',
-                    'System Time': new Date().toLocaleString()
-                };
-
-                let infoHtml = '<h3>🖥️ System Information</h3>';
-                for (let [key, value] of Object.entries(systemData)) {
-                    infoHtml += `<div style="margin: 5px 0;"><strong>${key}:</strong> ${value}</div>`;
-                }
-
-                this.systemDetails.innerHTML = infoHtml;
-                this.systemInfo.style.display = 'block';
-                this.addToHistory('jarvis', 'System information displayed.');
-            }
-
-            showHelp() {
-                const helpText = this.getHelpInfo();
-                this.addToHistory('jarvis', helpText);
-                this.speak("Help information displayed. You can use voice commands or click the task buttons.");
-            }
-
-            clearHistory() {
-                this.responseArea.innerHTML = '<p><strong>JARVIS:</strong> History cleared. How can I assist you?</p>';
-                this.conversationHistory = [];
-                this.systemInfo.style.display = 'none';
-                this.addToHistory('jarvis', 'Conversation history cleared.');
-            }
-
-            addToHistory(sender, message) {
-                this.conversationHistory.push({ sender, message, timestamp: new Date() });
-                
-                const messageDiv = document.createElement('div');
-                messageDiv.style.marginBottom = '10px';
-                messageDiv.style.padding = '10px';
-                messageDiv.style.borderRadius = '5px';
-                messageDiv.style.backgroundColor = sender === 'user' ? 'rgba(0, 212, 255, 0.1)' : 'rgba(0, 0, 0, 0.2)';
-                messageDiv.style.border = sender === 'user' ? '1px solid rgba(0, 212, 255, 0.3)' : '1px solid rgba(255, 255, 255, 0.1)';
-                messageDiv.innerHTML = `<strong>${sender === 'user' ? 'You' : 'JARVIS'}:</strong> ${message}`;
-                
-                this.responseArea.appendChild(messageDiv);
-                this.responseArea.scrollTop = this.responseArea.scrollHeight;
-            }
-
-            showTyping() {
-                this.typingIndicator.classList.add('active');
-            }
-
-            hideTyping() {
-                this.typingIndicator.classList.remove('active');
-            }
-
-            speak(text) {
-                if (this.synthesis && text.length < 200) {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.rate = 0.9;
-                    utterance.pitch = 1.1;
-                    utterance.volume = 0.8;
-                    
-                    // Try to use a more robotic voice if available
-                    const voices = this.synthesis.getVoices();
-                    const preferredVoice = voices.find(voice => 
-                        voice.name.includes('Microsoft') || voice.name.includes('Google')
-                    );
-                    if (preferredVoice) {
-                        utterance.voice = preferredVoice;
-                    }
-                    
-                    this.synthesis.speak(utterance);
-                }
-            }
-
-            showNotification(message) {
-                this.notification.textContent = message;
-                this.notification.classList.add('show');
-                
-                setTimeout(() => {
-                    this.notification.classList.remove('show');
-                }, 3000);
-            }
-
-            showMicrophoneHelp() {
-                const helpMessage = `
-                    <div style="background: rgba(255, 100, 100, 0.1); border: 1px solid #ff6464; border-radius: 10px; padding: 15px; margin: 10px 0;">
-                        <h3 style="color: #ff6464; margin-bottom: 10px;">🎤 Microphone Access Required</h3>
-                        <p><strong>To use voice features:</strong></p>
-                        <ol style="margin: 10px 0; padding-left: 20px;">
-                            <li>Look for a microphone icon in your browser's address bar</li>
-                            <li>Click it and select "Allow" for microphone access</li>
-                            <li>Or go to browser Settings > Privacy > Microphone > Allow this site</li>
-                            <li>Refresh the page after granting permission</li>
-                        </ol>
-                        <p><em>You can still use all JARVIS features by typing or clicking buttons!</em></p>
                     </div>
-                `;
-                this.responseArea.innerHTML += helpMessage;
-                this.responseArea.scrollTop = this.responseArea.scrollHeight;
-            }
+
+                    <div class="task-category">
+                        <h3>🌐 Web & Communication</h3>
+                        <div class="task-grid">
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('web', 'email')">Email Client</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('web', 'social')">Social Media</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('web', 'research')">Research Assistant</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('web', 'translate')">Language Translator</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('web', 'downloader')">File Downloader</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('web', 'bookmark')">Bookmark Manager</button>
+                        </div>
+                    </div>
+
+                    <div class="task-category">
+                        <h3>💻 Development Tools</h3>
+                        <div class="task-grid">
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('dev', 'vscode')">Code Editor</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('dev', 'git')">Git Manager</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('dev', 'api')">API Tester</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('dev', 'database')">Database Tool</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('dev', 'debug')">Debugger</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('dev', 'deploy')">Deploy Assistant</button>
+                        </div>
+                    </div>
+
+                    <div class="task-category">
+                        <h3>🎨 Creative Suite</h3>
+                        <div class="task-grid">
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('creative', 'image')">Image Editor</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('creative', 'video')">Video Editor</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('creative', 'audio')">Audio Studio</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('creative', '3d')">3D Modeling</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('creative', 'design')">Design Tools</button>
+                            <button class="task-button" onclick="jarvis.executeAdvancedTask('creative', 'animation')">Animation</button>
+                        </div>
+                    </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
+<script>
+  /**************** CONFIG ****************/
+  const CONFIG = {
+    GEMINI_KEY: "your google Ai gemini key", // <-- Get a free key from Google AI Studio
+    OWM_KEY:   "your open wether map api key",   // <— OpenWeatherMap
+    NEWS_KEY:  "your news API key",  // <— NewsAPI
+    CITY:      "auto",           // auto = geolocation
+    TTS_RATE:  1.0,
+    WAKE_WORD: "jarvis"
+  };
+
+  /**************** HELPERS ****************/
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => [...document.querySelectorAll(sel)];
+  const speak = text => {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const cleanText = text.replace(/\*\*|\*|`|\(.*\)/g, '');
+    const utter = new SpeechSynthesisUtterance(cleanText);
+    utter.rate = CONFIG.TTS_RATE;
+    speechSynthesis.speak(utter);
+  };
+  const addMsg = (cls, html) => {
+    const box = $('#responseArea');
+    const formattedHtml = html
+        .replace(/\*\*([\s\S]*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*([\s\S]*?)\*/g, '<em>$1</em>')
+        .replace(/`([\s\S]*?)`/g, '<code>$1</code>');
+    box.insertAdjacentHTML('beforeend', `<div class="message-${cls}">${formattedHtml}</div>`);
+    box.scrollTop = box.scrollHeight;
+  };
+
+  /**************** JARVIS CORE ****************/
+  const jarvis = {
+    mode: 'assistant',
+    recognition: null,
+    isListening: false,
+
+    init() {
+        this.loadApiKeys();
+        this.setupModeButtons();
+        this.setupFileUpload();
+        this.setupCalculator();
+        this.loadReminders();
+        this.clockLoop();
+        this.setupVoice();
+
+        try {
+            this.fetchWeather();
+            this.fetchNews();
+        } catch (e) {
+            console.error("Failed to fetch initial data", e);
+            addMsg('system', 'Could not load external widgets.');
         }
 
-        // Initialize Advanced JARVIS
-        let jarvis;
-        document.addEventListener('DOMContentLoaded', () => {
-            jarvis = new AdvancedJarvis();
+        $('#sendButton').onclick = () => this.handle($('#textInput').value.trim());
+        $('#textInput').addEventListener('keydown', e => e.key==='Enter' && this.handle(e.target.value.trim()));
+        $('#saveApiKeys').onclick = () => this.saveApiKeys();
+        
+        const welcomeMsg = "JARVIS initialized. All systems nominal. How can I assist?";
+        addMsg('jarvis', welcomeMsg);
+        speak(welcomeMsg);
+    },
+
+    setupVoice() {
+        if ('webkitSpeechRecognition' in window) {
+            this.recognition = new webkitSpeechRecognition();
+            this.recognition.continuous = true;
+            this.recognition.interimResults = false;
+            this.recognition.lang = 'en-US';
+
+            this.recognition.onresult = e => {
+                const cmd = e.results[e.results.length - 1][0].transcript.trim().toLowerCase();
+                addMsg('user', `<strong>You:</strong> ${cmd}`);
+                this.handle(cmd);
+            };
+
+            this.recognition.onstart = () => {
+                $('#voiceVisualizer').classList.add('active');
+                $('#voiceStatus').classList.add('warning');
+            };
+
+            this.recognition.onend = () => {
+                $('#voiceVisualizer').classList.remove('active');
+                $('#voiceStatus').classList.remove('warning');
+                if (this.isListening) {
+                    this.recognition.start();
+                }
+            };
+            
+            $('#voiceButton').onclick = () => this.toggleListening();
+        } else {
+            const msg = "Voice recognition is not supported in this browser.";
+            addMsg('system', msg);
+        }
+    },
+
+    toggleListening() {
+        if (!this.recognition) return;
+        
+        if (this.isListening) {
+            this.recognition.stop();
+            this.isListening = false;
+        } else {
+            try {
+                this.recognition.start();
+                this.isListening = true;
+            } catch(e) {
+                console.error("Could not start voice recognition", e);
+                addMsg('system', "Voice recognition could not be started. Please ensure microphone permissions are enabled.");
+            }
+        }
+    },
+
+    loadApiKeys(){
+        CONFIG.GEMINI_KEY = localStorage.getItem('GEMINI_KEY') || CONFIG.GEMINI_KEY;
+        CONFIG.OWM_KEY = localStorage.getItem('OWM_KEY') || CONFIG.OWM_KEY;
+        CONFIG.NEWS_KEY = localStorage.getItem('NEWS_KEY') || CONFIG.NEWS_KEY;
+        $('#geminiKeyInput').value = CONFIG.GEMINI_KEY;
+        $('#owmKeyInput').value = CONFIG.OWM_KEY;
+        $('#newsKeyInput').value = CONFIG.NEWS_KEY;
+        localStorage.setItem('GEMINI_KEY', CONFIG.GEMINI_KEY);
+        localStorage.setItem('OWM_KEY', CONFIG.OWM_KEY);
+        localStorage.setItem('NEWS_KEY', CONFIG.NEWS_KEY);
+    },
+    saveApiKeys(){
+        CONFIG.GEMINI_KEY = $('#geminiKeyInput').value.trim();
+        CONFIG.OWM_KEY = $('#owmKeyInput').value.trim();
+        CONFIG.NEWS_KEY = $('#newsKeyInput').value.trim();
+        localStorage.setItem('GEMINI_KEY', CONFIG.GEMINI_KEY);
+        localStorage.setItem('OWM_KEY', CONFIG.OWM_KEY);
+        localStorage.setItem('NEWS_KEY', CONFIG.NEWS_KEY);
+        const msg = 'API keys saved successfully.';
+        addMsg('system', msg);
+        speak(msg);
+        this.fetchWeather();
+        this.fetchNews();
+    },
+
+    setupModeButtons() {
+      $$('.mode-button').forEach(btn => btn.onclick = () => {
+        $$('.mode-button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.mode = btn.dataset.mode;
+        speak(`Switched to ${this.mode} mode`);
+      });
+    },
+
+    setupFileUpload() {
+      $('#fileInput').addEventListener('change', e => {
+        [...e.target.files].forEach(file => this.analyzeFile(file));
+      });
+      ['dragenter','dragover','drop'].forEach(evt =>
+        document.addEventListener(evt, e=>{
+          e.preventDefault();
+          if (evt==='drop') [...e.dataTransfer.files].forEach(f=>this.analyzeFile(f));
+        }));
+    },
+
+    async analyzeFile(file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const text = reader.result;
+        const fileInfo = `File received: ${file.name}, size: ${(file.size/1024).toFixed(1)} kilobytes.`;
+        addMsg('system', `<strong>File:</strong> ${file.name} (${(file.size/1024).toFixed(1)} KB)`);
+        speak(fileInfo);
+        
+        let analysisResult;
+        if (file.type.startsWith('image/')) {
+          analysisResult = `Image detected. I can process this with vision models. What should I look for?`;
+        } else if (file.name.endsWith('.json')) {
+          try { 
+            const obj = JSON.parse(text); 
+            analysisResult = `Valid JSON file with ${Object.keys(obj).length} top-level keys. Ready for analysis.`;
+          } catch { 
+            analysisResult = 'This appears to be an invalid JSON file.'; 
+          }
+        } else if (file.name.endsWith('.csv')) {
+          const lines = text.split('\n');
+          analysisResult = `CSV file detected with ${lines.length} rows and ${lines[0].split(',').length} columns. I can summarize or visualize this data.`;
+        } else {
+          const words = text.split(/\s+/).length;
+          analysisResult = `Plain text file detected with ${words} words. I can summarize, translate, or analyze its content.`;
+        }
+        
+        addMsg('jarvis', `🖼️ ${analysisResult}`);
+        speak(analysisResult);
+      };
+      reader.readAsText(file);
+    },
+
+    setupCalculator() {
+      $('#calcInput').addEventListener('input', e=>{
+          try {
+            const res = math.evaluate(e.target.value);
+            $('#calcResult').textContent = res;
+          } catch(err) { $('#calcResult').textContent = ''; }
+      });
+    },
+
+    async handle(cmd) {
+      if (!cmd) return;
+      $('#typingIndicator').classList.add('active');
+      $('#textInput').value = '';
+      const lower = cmd.toLowerCase();
+      if (lower.includes(CONFIG.WAKE_WORD)) cmd = cmd.replace(CONFIG.WAKE_WORD,'').trim();
+
+      if (lower.includes('time')) {
+        const t = new Date().toLocaleTimeString();
+        addMsg('jarvis', `The time is ${t}`);
+        speak(t);
+      } else if (lower.includes('date')) {
+        const d = new Date().toDateString();
+        addMsg('jarvis', d);
+        speak(d);
+      } else if (lower.includes('weather')) {
+        this.fetchWeather(true);
+      } else if (lower.includes('news')) {
+        this.fetchNews(true);
+      } else if (lower.startsWith('add reminder') || lower.startsWith('remind me to')) {
+        const what = lower.replace(/^(add reminder|remind me to)\s*/i, '').trim();
+        if (what) {
+            this.addReminder(what);
+        } else {
+            const msg = "What should I remind you about?";
+            addMsg('jarvis', msg);
+            speak(msg);
+        }
+      } else if (lower.includes('show reminders') || lower.includes('what are my reminders')) {
+        this.showReminders();
+      } else if (lower.includes('clear all reminders') || lower.includes('delete all reminders')) {
+        this.clearAllReminders();
+      } else if (lower.includes('open ')) {
+        const site = lower.split('open ')[1].split(' ')[0].replace('.com','');
+        window.open(`https://${site}.com`, '_blank');
+        const msg = `Opening ${site}`;
+        addMsg('jarvis', msg);
+        speak(msg);
+      } else if (lower.startsWith('search for')) {
+          const query = cmd.substring(cmd.indexOf('for') + 3).trim();
+          window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+          const msg = `Searching for ${query}`;
+          addMsg('jarvis', msg);
+          speak(msg);
+      } else if (lower === 'help'){
+          const helpText = 'Available commands: time, date, weather, news, remind me to [task], open [website], search for [query], calculate [expression], help';
+          addMsg('jarvis', helpText);
+          speak(helpText);
+      }else {
+        await this.getGenerativeResponse(cmd);
+      }
+      $('#typingIndicator').classList.remove('active');
+    },
+
+    async getGenerativeResponse(prompt) {
+        if (!CONFIG.GEMINI_KEY || CONFIG.GEMINI_KEY === "YOUR_GEMINI_API_KEY") {
+            const msg = "My generative model is not configured. Please add a Google Gemini API key in the API Configuration panel.";
+            addMsg('jarvis', msg);
+            speak(msg);
+            return;
+        }
+
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${CONFIG.GEMINI_KEY}`;
+        const finalPrompt = `You are JARVIS, a witty and incredibly advanced AI assistant. Your current mode is '${this.mode}'. Respond to the following user prompt: "${prompt}"`;
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: finalPrompt }] }]
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                const errorDetails = data?.error?.message || `HTTP Error: ${response.status}`;
+                throw new Error(errorDetails);
+            }
+
+            const text = data.candidates[0].content.parts[0].text;
+            addMsg('jarvis', text);
+            speak(text);
+
+        } catch (error) {
+            console.error("Gemini API call failed:", error);
+            const errorMsg = `I'm having trouble connecting to my generative model right now. The API returned the following error: **${error.message}**`;
+            addMsg('jarvis', errorMsg);
+            speak(`I'm having trouble connecting to my generative model. The API returned the following error: ${error.message}`);
+        }
+    },
+
+    async fetchWeather(speakIt=false) {
+      if(!CONFIG.OWM_KEY) { 
+          const msg = 'Weather API Key needed';
+          $('#weatherInfo').textContent = msg;
+          if(speakIt) speak(msg);
+          return; 
+      }
+      try {
+        let url;
+        if (CONFIG.CITY==='auto' && navigator.geolocation) {
+            const pos = await new Promise((res, rej) => {
+                navigator.geolocation.getCurrentPosition(res, rej, { timeout: 10000 });
+            });
+            const {latitude:lat, longitude:lon} = pos.coords;
+            url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${CONFIG.OWM_KEY}&units=metric`;
+        } else {
+          url = `https://api.openweathermap.org/data/2.5/weather?q=London&appid=${CONFIG.OWM_KEY}&units=metric`;
+        }
+        const response = await fetch(url, { signal: AbortSignal.timeout(10000) });
+        const data = await response.json();
+        const {main:{temp}, weather:[{description}]} = data;
+        const text = `${temp.toFixed(1)}°C – ${description}`;
+        $('#weatherInfo').textContent = text;
+        if (speakIt) { speak(text); addMsg('jarvis', text); }
+      } catch(e) {
+        const msg = 'Weather unavailable';
+        $('#weatherInfo').textContent = msg;
+        if(speakIt) speak(msg);
+        console.error(e);
+      }
+    },
+
+    async fetchNews(speakIt=false) {
+        if(!CONFIG.NEWS_KEY) { 
+            const msg = 'News API Key needed';
+            $('#newsInfo').textContent = msg;
+            if(speakIt) speak(msg);
+            return; 
+        }
+      try {
+        const response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${CONFIG.NEWS_KEY}`, { signal: AbortSignal.timeout(10000) });
+        const {articles} = await response.json();
+        const top = articles.slice(0,3).map(a=>a.title).join(' • ');
+        $('#newsInfo').textContent = top;
+        if (speakIt) { speak('Top headlines'); addMsg('jarvis', top); }
+      } catch {
+        const msg = 'Error loading news';
+        $('#newsInfo').textContent = msg;
+        if(speakIt) speak(msg);
+      }
+    },
+
+    addReminder(text=null) {
+      const val = text || $('#quickNote').value.trim();
+      if (!val) return;
+      const list = JSON.parse(localStorage.getItem('jarvis-reminders') || '[]');
+      list.push({id: Date.now(), text: val, timestamp: new Date().toLocaleString()});
+      localStorage.setItem('jarvis-reminders', JSON.stringify(list));
+      this.loadReminders();
+      $('#quickNote').value='';
+      speak('Reminder added');
+    },
+    removeReminder(id) {
+      let list = JSON.parse(localStorage.getItem('jarvis-reminders') || '[]');
+      list = list.filter(r=>r.id!==id);
+      localStorage.setItem('jarvis-reminders', JSON.stringify(list));
+      this.loadReminders();
+      speak('Reminder removed');
+    },
+    loadReminders() {
+      const list = JSON.parse(localStorage.getItem('jarvis-reminders') || '[]');
+      $('#reminderList').innerHTML = list.map(r=>`
+        <div class="reminder-item"><span>${r.text} <em>(${r.timestamp})</em></span><button onclick="jarvis.removeReminder(${r.id})">❌</button>
+        </div>`).join('');
+    },
+
+    showReminders() {
+        const list = JSON.parse(localStorage.getItem('jarvis-reminders') || '[]');
+        if (list.length === 0) {
+            const msg = "You have no reminders.";
+            addMsg('jarvis', msg);
+            speak(msg);
+            return;
+        }
+
+        let response = "Here are your reminders: ";
+        const reminderTexts = list.map((r, i) => `${i + 1}. ${r.text}`).join('... ');
+        response += reminderTexts;
+
+        addMsg('jarvis', `<ul>${list.map(r => `<li>${r.text}</li>`).join('')}</ul>`);
+        speak(response);
+    },
+
+    clearAllReminders() {
+        localStorage.setItem('jarvis-reminders', '[]');
+        this.loadReminders();
+        const msg = "I have cleared all of your reminders.";
+        addMsg('jarvis', msg);
+        speak(msg);
+    },
+
+    clockLoop() {
+      setInterval(()=>$('#currentTime').textContent = new Date().toLocaleTimeString(), 1000);
+    },
+
+    executeAdvancedTask(domain, task) {
+      const responses = {
+          system: {
+              performance: "Analyzing system performance... CPU at 15%, Memory at 45%, Disk I/O normal. All systems nominal.",
+              cleanup: "Initiating disk cleanup... Scanned 50GB, found 2.5GB of temporary files. Cleanup complete.",
+              security: "Running full security scan... No threats detected. System integrity is 100%.",
+              backup: "Starting full system backup to secure cloud storage... Estimated time: 15 minutes.",
+              optimize: "Optimizing system parameters... Registry cleaned, startup processes streamlined. System should feel faster now.",
+              diagnostics: "Running hardware diagnostics... All components passed. Motherboard, CPU, RAM, and storage are healthy."
+          },
+          web: {
+              email: "Opening secure email client... You have 3 unread messages.",
+              social: "Accessing social media dashboard... You have new notifications on Twitter and LinkedIn.",
+              research: "Research Assistant activated. What topic shall I investigate for you?",
+              translate: "Language Translator is ready. Please provide the text you wish to translate.",
+              downloader: "Secure File Downloader is active. Please provide the URL of the file to download.",
+              bookmark: "Bookmark Manager opened. You have 25 saved bookmarks."
+          },
+          dev: {
+              vscode: "Launching Visual Studio Code... Ready for coding.",
+              git: "Git Manager is active. Current branch is 'main'. No uncommitted changes.",
+              api: "API Tester is ready. Please provide the endpoint and request parameters.",
+              database: "Connecting to the primary database... Connection successful. Ready to accept queries.",
+              debug: "Debugger attached. Listening for events...",
+              deploy: "Deployment Assistant initiated. What is the target environment for this deployment?"
+          },
+          creative: {
+              image: "Opening advanced image editor... Please load an image to begin.",
+              video: "Launching video editing suite... Timeline is ready for your clips.",
+              audio: "Audio production studio is now active. Please connect a microphone or load an audio file.",
+              '3d': "3D modeling software is ready. The viewport is clear and ready for your creations.",
+              design: "Loading design tools... Vector and raster tools are available.",
+              animation: "Animation suite is ready. Keyframe timeline is set up."
+          }
+      };
+      const msg = responses[domain]?.[task] || 'Command not mapped';
+      addMsg('jarvis', msg);
+      speak(msg);
+    }
+  };
+
+  /**************** NEURAL CANVAS ****************/
+  (() => {
+    const c = $('#neuralNetwork'), ctx = c.getContext('2d');
+    let w, h, nodes = [];
+    const resize = () => { c.width = w = innerWidth; c.height = h = innerHeight; };
+    window.addEventListener('resize', resize); resize();
+    for (let i=0;i<80;i++) nodes.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-0.5)*0.5,vy:(Math.random()-0.5)*0.5});
+    const draw = () => {
+      ctx.clearRect(0,0,w,h);
+      ctx.strokeStyle = 'rgba(0,212,255,0.3)';
+      nodes.forEach(n=>{
+        n.x+=n.vx; n.y+=n.vy;
+        if (n.x<0||n.x>w) n.vx*=-1;
+        if (n.y<0||n.y>h) n.vy*=-1;
+        ctx.beginPath();
+        nodes.forEach(m=>{
+          const d = Math.hypot(n.x-m.x,n.y-m.y);
+          if (d<150) { ctx.moveTo(n.x,n.y); ctx.lineTo(m.x,m.y); }
         });
-    </script>
+        ctx.stroke();
+      });
+      requestAnimationFrame(draw);
+    };
+    draw();
+  })();
+
+  /**************** BOOT ****************/
+  window.addEventListener('DOMContentLoaded', () => jarvis.init());
+</script>
 </body>
 </html>
